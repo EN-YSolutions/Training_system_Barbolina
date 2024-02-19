@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Style/TextField.uss?fileID=7433441132597879392&amp;guid=6705d507bc6970d4da3b4693d3a5951e&amp;type=3#TextField" />
+    <ui:VisualElement style="width: 100%; height: 100%; -unity-background-image-tint-color: rgb(245, 245, 245); background-color: rgb(245, 245, 245); flex-direction: row;">
+        <ui:VisualElement style="flex-grow: 0; width: 30%; height: 100%;" />
+        <ui:VisualElement style="flex-grow: 0; align-items: center; justify-content: space-around; height: 100%; width: 40%;">
+            <ui:VisualElement style="width: 100%; height: 60%; align-items: center; justify-content: space-around; background-color: rgb(33, 150, 243); border-left-color: rgb(76, 175, 80); border-right-color: rgb(76, 175, 80); border-top-color: rgb(76, 175, 80); border-bottom-color: rgb(76, 175, 80); border-left-width: 8px; border-right-width: 8px; border-top-width: 8px; border-bottom-width: 8px; border-top-left-radius: 19px; border-bottom-left-radius: 19px; border-top-right-radius: 19px; border-bottom-right-radius: 19px;">
+                <ui:TextField picking-mode="Ignore" label="Имя" value="Им" name="Name" style="flex-direction: column; width: 50%; height: 20%; justify-content: space-around; font-size: 20px;" />
+                <ui:TextField picking-mode="Ignore" label="Пароль" value="filler text" name="Password" password="true" style="width: 50%; height: 20%; flex-direction: column; justify-content: space-around; font-size: 20%;" />
+                <ui:Button text="Авторизация" display-tooltip-when-elided="true" style="width: 50%; height: 20%; border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); font-size: 20%;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 0; width: 30%; height: 100%;" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,25 @@
+.unity-text-field Label {
+    -unity-text-align: lower-center;
+    font-size: 50%;
+    color: rgb(255, 255, 255);
+    height: auto;
+    width: auto;
+    text-overflow: clip;
+    justify-content: space-around;
+    flex-grow: 1;
+}
+
+#unity-text-input {
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    font-size: 50%;
+    -unity-text-align: middle-left;
+    height: auto;
+    width: auto;
+    flex-grow: 1;
+}
+
+.unity-button {
+    background-color: rgb(76, 175, 80);
+    font-size: initial;
+}
