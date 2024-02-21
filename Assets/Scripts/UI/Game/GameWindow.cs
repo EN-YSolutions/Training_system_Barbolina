@@ -21,7 +21,7 @@ public class GameWindow : MonoBehaviour
 
     private void Awake()
     {
-        AllQuestions = DatabaseConnector.AllCoursesQuestions();
+        AllQuestions = DatabaseConnector.AllCoursesQuestionsForRepetition();
 
         System.Random RND = new System.Random();
         for (int i = 0; i < AllQuestions.Count; i++)
@@ -42,8 +42,8 @@ public class GameWindow : MonoBehaviour
         int rand = Random.Range(0, 2);
         TrueRoad = rand == 0 ? Roads.LeftRoad : Roads.RightRoad; 
 
-        view.ShowQuestion(AllQuestions[numberQ].QuestionText, rand == 0 ? AllQuestions[numberQ].TrueAnswer : AllQuestions[numberQ].FalseAnswer,
-            rand == 1 ? AllQuestions[numberQ].TrueAnswer : AllQuestions[numberQ].FalseAnswer);
+        //view.ShowQuestion(AllQuestions[numberQ].QuestionText, rand == 0 ? AllQuestions[numberQ].TrueAnswer : AllQuestions[numberQ].FalseAnswer,
+        //    rand == 1 ? AllQuestions[numberQ].TrueAnswer : AllQuestions[numberQ].FalseAnswer);
         obstacle.Init(AllQuestions[numberQ].Time);
 
         yield return new WaitForSeconds(AllQuestions[numberQ].Time);

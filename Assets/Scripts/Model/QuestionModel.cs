@@ -7,16 +7,18 @@ public class QuestionModel
     public string Id;
     public string QuestionText;
     public string TrueAnswer;
-    public string FalseAnswer;
+    public string OneFalseAnswer;
+    public string TwoFalseAnswer;
     public string Explanation;
     public int Time;
 
-    public QuestionModel(string id, string questionText, string trueAnswer, string falseAnswer, string explanation, int time)
+    public QuestionModel(string id, string questionText, string trueAnswer, string oneFalseAnswer, string twoFalseAnswer, string explanation, int time)
     {
         Id = id;
         QuestionText = questionText;
         TrueAnswer = trueAnswer;
-        FalseAnswer = falseAnswer;
+        OneFalseAnswer = oneFalseAnswer;
+        TwoFalseAnswer = twoFalseAnswer;
         Explanation = explanation;
         Time = time;
     }

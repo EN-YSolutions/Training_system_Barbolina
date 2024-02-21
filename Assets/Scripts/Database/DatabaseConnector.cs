@@ -100,7 +100,39 @@ public static class DatabaseConnector
 
         _reader = _dbcmd.ExecuteReader();
 
-        while(_reader.Read())
+        while (_reader.Read())
+        {
+            for (int i = 0; i < _reader.FieldCount; i++)
+            {
+                result.Add(_reader[i].ToString());
+            }
+        }
+
+        _reader.Close();
+        _reader = null;
+        _dbcmd.Dispose();
+        _dbcmd = null;
+        _dbcon.Close();
+        _dbcon = null;
+
+        return result;
+    }
+
+    public static List<string> AllCoursesUserAuthor()
+    {
+        _dbcon = new NpgsqlConnection(_connectionString);
+        _dbcon.Open();
+        _dbcmd = _dbcon.CreateCommand();
+        List<string> result = new();
+
+        string sql =
+            "SELECT id " +
+            $"FROM \"Ñources\" WHERE \"author_id\" = \'{IdNowUser}\'";
+        _dbcmd.CommandText = sql;
+
+        _reader = _dbcmd.ExecuteReader();
+
+        while (_reader.Read())
         {
             for (int i = 0; i < _reader.FieldCount; i++)
             {
@@ -147,7 +179,7 @@ public static class DatabaseConnector
         return result;
     }
 
-    public static List<QuestionModel> AllCoursesQuestions()
+    public static List<QuestionModel> AllCoursesQuestionsForRepetition()
     {
         _dbcon = new NpgsqlConnection(_connectionString);
         _dbcon.Open();
@@ -155,7 +187,7 @@ public static class DatabaseConnector
         List<QuestionModel> result = new();
 
         string sql =
-            "SELECT id, question, trueanswer, falseanswer, explanation, time " +
+            "SELECT id, question, trueanswer, onefalseanswer, twofalseanswer, explanation, time " +
             $"FROM questions WHERE \"idcources\" = \'{IdCources}\' AND startpoint <= {ProgressPoint}";
         _dbcmd.CommandText = sql;
 
@@ -163,11 +195,11 @@ public static class DatabaseConnector
 
         while (_reader.Read())
         {
-            for (int i = 0; i < _reader.FieldCount; i+= 6)
+            for (int i = 0; i < _reader.FieldCount; i += 7)
             {
-                result.Add(new QuestionModel(_reader[i].ToString(), _reader[i+1].ToString(),
-                    _reader[i+2].ToString(), _reader[i+3].ToString(),
-                    _reader[i+4].ToString(), Int32.Parse(_reader[i + 5].ToString())));
+                result.Add(new QuestionModel(_reader[i].ToString(), _reader[i + 1].ToString(),
+                    _reader[i + 2].ToString(), _reader[i + 3].ToString(), _reader[i + 4].ToString(),
+                    _reader[i + 5].ToString(), Int32.Parse(_reader[i + 6].ToString())));
             }
         }
 
@@ -180,6 +212,42 @@ public static class DatabaseConnector
 
         return result;
     }
+
+    public static List<QuestionModel> AllCoursQuestions(string id)
+    {
+        _dbcon = new NpgsqlConnection(_connectionString);
+        _dbcon.Open();
+        _dbcmd = _dbcon.CreateCommand();
+        List<QuestionModel> result = new();
+
+        string sql =
+            "SELECT id, question, trueanswer, onefalseanswer, twofalseanswer, explanation, time " +
+            $"FROM questions WHERE \"idcources\" = \'{id}\'";
+        _dbcmd.CommandText = sql;
+
+        _reader = _dbcmd.ExecuteReader();
+
+        while (_reader.Read())
+        {
+            for (int i = 0; i < _reader.FieldCount; i += 7)
+            {
+                result.Add(new QuestionModel(_reader[i].ToString(), _reader[i + 1].ToString(),
+                    _reader[i + 2].ToString(), _reader[i + 3].ToString(), _reader[i + 4].ToString(),
+                    _reader[i + 5].ToString(), Int32.Parse(_reader[i + 6].ToString())));
+            }
+        }
+
+        _reader.Close();
+        _reader = null;
+        _dbcmd.Dispose();
+        _dbcmd = null;
+        _dbcon.Close();
+        _dbcon = null;
+
+        return result;
+    }
+
+
 
     public static List<RepetitionModel> AllCoursesRepetition()
     {
@@ -201,11 +269,50 @@ public static class DatabaseConnector
             {
                 var temp = new RepetitionModel();
                 temp.Id = _reader[i].ToString();
-                temp.IdCources = _reader[i+1].ToString();
-                temp.IdUser = _reader[i+2].ToString();
+                temp.IdCources = _reader[i + 1].ToString();
+                temp.IdUser = _reader[i + 2].ToString();
                 temp.Date = _reader[i + 3].ToString(); // .Substring(0, 10)
-                temp.PassProgressPoint = Int32.Parse(_reader[i+4].ToString());
-                temp.PercentageCorrectAnswers = Int32.Parse(_reader[i+5].ToString());
+                temp.PassProgressPoint = Int32.Parse(_reader[i + 4].ToString());
+                temp.PercentageCorrectAnswers = Int32.Parse(_reader[i + 5].ToString());
+                result.Add(temp);
+            }
+        }
+
+        _reader.Close();
+        _reader = null;
+        _dbcmd.Dispose();
+        _dbcmd = null;
+        _dbcon.Close();
+        _dbcon = null;
+
+        return result;
+    }
+
+    public static List<RepetitionModel> AllCourseRepetition(string idCource)
+    {
+        _dbcon = new NpgsqlConnection(_connectionString);
+        _dbcon.Open();
+        _dbcmd = _dbcon.CreateCommand();
+        List<RepetitionModel> result = new();
+
+        string sql =
+            "SELECT id, idcources, iduser, passdate, passprogresspoint, percentagecorrectanswers " +
+            $"FROM repetitioncourses WHERE \"idcources\" = \'{idCource}\'";
+        _dbcmd.CommandText = sql;
+
+        _reader = _dbcmd.ExecuteReader();
+
+        while (_reader.Read())
+        {
+            for (int i = 0; i < _reader.FieldCount; i += 6)
+            {
+                var temp = new RepetitionModel();
+                temp.Id = _reader[i].ToString();
+                temp.IdCources = _reader[i + 1].ToString();
+                temp.IdUser = _reader[i + 2].ToString();
+                temp.Date = _reader[i + 3].ToString(); // .Substring(0, 10)
+                temp.PassProgressPoint = Int32.Parse(_reader[i + 4].ToString());
+                temp.PercentageCorrectAnswers = Int32.Parse(_reader[i + 5].ToString());
                 result.Add(temp);
             }
         }
@@ -298,7 +405,7 @@ public static class DatabaseConnector
         QuestionModel result = new();
 
         string sql =
-            "SELECT question, trueanswer, falseanswer, explanation " +
+            "SELECT question, trueanswer, onefalseanswer, twofalseanswer, explanation " +
             $"FROM questions WHERE \"id\" = \'{id}\'";
         _dbcmd.CommandText = sql;
 
@@ -306,12 +413,13 @@ public static class DatabaseConnector
 
         while (_reader.Read())
         {
-            for (int i = 0; i < _reader.FieldCount; i+=4)
+            for (int i = 0; i < _reader.FieldCount; i += 5)
             {
                 result.QuestionText = _reader[i].ToString();
                 result.TrueAnswer = _reader[i + 1].ToString();
-                result.FalseAnswer = _reader[i + 2].ToString();
-                result.Explanation = _reader[i + 3].ToString();
+                result.OneFalseAnswer = _reader[i + 2].ToString();
+                result.TwoFalseAnswer = _reader[i + 3].ToString();
+                result.Explanation = _reader[i + 4].ToString();
             }
         }
 
@@ -378,7 +486,7 @@ public static class DatabaseConnector
 
         while (_reader.Read())
         {
-            for (int i = 0; i < _reader.FieldCount; i ++)
+            for (int i = 0; i < _reader.FieldCount; i++)
             {
                 result.Add(_reader[i].ToString());
             }
@@ -443,5 +551,59 @@ public static class DatabaseConnector
         _dbcmd = null;
         _dbcon.Close();
         _dbcon = null;
+    }
+
+    public static bool AddQuestion(string idcource, string startPoint, string question, string trueAnswer, string oneFalseAnswer, string twoFalseAnswer, string explanation, string time)
+    {
+        _dbcon = new NpgsqlConnection(_connectionString);
+        _dbcon.Open();
+        _dbcmd = _dbcon.CreateCommand();
+        bool result = true;
+
+        try
+        {
+            string sql =
+            "INSERT INTO \"questions\" " +
+            "(idcources, startpoint, \"question\", \"trueanswer\", \"oneFalseAnswer\", \"twofalseanswer\", \"explanation\", time) " +
+            $"VALUES(\'{idcource}\', {startPoint},\'{question}\', \'{trueAnswer}\', \'{oneFalseAnswer}\', \'{twoFalseAnswer}\',\'{explanation}\', {time});";
+            _dbcmd.CommandText = sql;
+            _dbcmd.ExecuteReader();
+        }
+        catch
+        {
+            result = false;
+        }
+
+        _dbcmd.Dispose();
+        _dbcmd = null;
+        _dbcon.Close();
+        _dbcon = null;
+        return result;
+    }
+
+    public static bool CheckAuthorCources()
+    {
+        _dbcon = new NpgsqlConnection(_connectionString);
+        _dbcon.Open();
+        _dbcmd = _dbcon.CreateCommand();
+        bool result = true;
+
+        string sql =
+            "SELECT id " +
+            $"FROM \"Ñources\" WHERE \"author_id\" = \'{IdNowUser}\'";
+        _dbcmd.CommandText = sql;
+
+        _reader = _dbcmd.ExecuteReader();
+
+        result = _reader.Read();
+
+        _reader.Close();
+        _reader = null;
+        _dbcmd.Dispose();
+        _dbcmd = null;
+        _dbcon.Close();
+        _dbcon = null;
+
+        return result;
     }
 }
