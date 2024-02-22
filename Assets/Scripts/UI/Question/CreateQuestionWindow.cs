@@ -24,7 +24,7 @@ public class CreateQuestionWindow : BaseWindow
     private void Awake()
     {
         createButton.onClick.AddListener(CreateQuestion);
-        exitButton.onClick.AddListener(Close);
+        exitButton.onClick.AddListener(WindowAggregator.Close);
     }
 
     private void OnEnable()
@@ -44,7 +44,7 @@ public class CreateQuestionWindow : BaseWindow
     private void OnDestroy()
     {
         createButton.onClick.RemoveListener(CreateQuestion);
-        exitButton.onClick.RemoveListener(Close);
+        exitButton.onClick.RemoveListener(WindowAggregator.Close);
     }
 
     private void CreateQuestion()

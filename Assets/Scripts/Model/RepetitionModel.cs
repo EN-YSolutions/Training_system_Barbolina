@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class RepetitionModel : MonoBehaviour
+public class RepetitionModel
 {
     public string Id;
     public string IdCources;

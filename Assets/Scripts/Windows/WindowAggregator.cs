@@ -8,7 +8,7 @@ public static class WindowAggregator
 
     public static void Open(BaseWindow window)
     {
-        if(window.IsClosePrevWindow && _windows.Count != 0)
+        if(_windows.Count > 0)
         {
             _windows.Peek().Close();
         }
@@ -20,7 +20,7 @@ public static class WindowAggregator
     public static void Close()
     {
         _windows.Pop().Close();
-        if(_windows.Count != 0)
+        if(_windows.Count > 0)
         {
             _windows.Peek().Open();
         }

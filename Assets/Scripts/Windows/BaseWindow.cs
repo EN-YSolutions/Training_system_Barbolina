@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class BaseWindow : MonoBehaviour
 {
-    public bool IsClosePrevWindow => isClosePrevWindow;
-
-    [SerializeField] protected bool isClosePrevWindow;
-
-
     public void Open()
     {
         gameObject.SetActive(true);

@@ -187,7 +187,7 @@ public static class DatabaseConnector
         List<QuestionModel> result = new();
 
         string sql =
-            "SELECT id, question, trueanswer, onefalseanswer, twofalseanswer, explanation, time " +
+            "SELECT id, \"question\", \"trueanswer\", \"oneFalseAnswer\", \"twofalseanswer\", \"explanation\", time " +
             $"FROM questions WHERE \"idcources\" = \'{IdCources}\' AND startpoint <= {ProgressPoint}";
         _dbcmd.CommandText = sql;
 
@@ -221,7 +221,7 @@ public static class DatabaseConnector
         List<QuestionModel> result = new();
 
         string sql =
-            "SELECT id, question, trueanswer, onefalseanswer, twofalseanswer, explanation, time " +
+            "SELECT id, \"question\", \"trueanswer\", \"oneFalseAnswer\", \"twofalseanswer\", \"explanation\", time " +
             $"FROM questions WHERE \"idcources\" = \'{id}\'";
         _dbcmd.CommandText = sql;
 
