@@ -48,5 +48,6 @@ public class PlayerController : MonoBehaviour
 public enum Roads
 {
     LeftRoad,
+    CentralRoad,
     RightRoad
 }

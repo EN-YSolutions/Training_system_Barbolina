@@ -10,7 +10,6 @@ public class GameWindow : MonoBehaviour
     [SerializeField] private GameWindowView view;
     [SerializeField] private ViewRightAnswer rightAnswer;
     [SerializeField] private ViewResult result;
-    [Space]
 
     private List<QuestionModel> AllQuestions = new();
     private List<MistakeModel> AllMistakes = new();
@@ -21,15 +20,7 @@ public class GameWindow : MonoBehaviour
 
     private void Awake()
     {
-        AllQuestions = DatabaseConnector.AllCoursesQuestionsForRepetition();
-
-        System.Random RND = new System.Random();
-        for (int i = 0; i < AllQuestions.Count; i++)
-        {
-            var tmp = AllQuestions[0];
-            AllQuestions.RemoveAt(0);
-            AllQuestions.Insert(RND.Next(AllQuestions.Count), tmp);
-        }
+        
 
         StartCoroutine(StartRun());
     }
