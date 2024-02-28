@@ -1,10 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ObstacleController : MonoBehaviour
 {
-    private float endZ = 2f;
+    public event Action EndMove = delegate{ };
+    private float endZ = 5f;
 
     Vector3 startPos;
     Vector3 endPos;
@@ -25,13 +27,13 @@ public class ObstacleController : MonoBehaviour
     {
         float t = 0f;
 
-        while (transform.position.z >= endZ)
-        {
+        while (transform.position.z > endZ)
+        { 
             t += Time.deltaTime;
             transform.position = Vector3.Lerp(startPos, endPos, t / time);
             yield return null;
         }
 
-        transform.position = endPos;
+        EndMove.Invoke();
     }
 }

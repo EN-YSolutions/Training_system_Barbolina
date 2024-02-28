@@ -5,6 +5,7 @@ using UnityEngine;
 public class StateMachineLevel : MonoBehaviour
 {
     [SerializeField] private StateShowQuestion stateShow;
+    [SerializeField] private ViewResult viewResult;
 
     private List<QuestionModel> _allQuestions = new();
     private List<MistakeModel> _allMistakes = new();
@@ -19,13 +20,20 @@ public class StateMachineLevel : MonoBehaviour
     {
         _nowState.End();
         if (state is StateShowQuestion)
+        {
+            _numQuestion++;
             StartLoopGame();
+            return;
+        }
 
         state.Enter(_allQuestions[_numQuestion], _trueRoad);
         _nowState = state;
     }
 
-
+    public void AddMistake()
+    {
+        _allMistakes.Add(new MistakeModel(_allQuestions[_numQuestion].Id, DatabaseConnector.IdNowUser, DatabaseConnector.IdCources));
+    }
 
     private void Awake()
     {
@@ -49,9 +57,25 @@ public class StateMachineLevel : MonoBehaviour
 
     private void StartLoopGame()
     {
-        _trueRoad = (Roads)Random.Range(1, 4);
+        if (_numQuestion == _allQuestions.Count)
+            EndLevel();
+        _trueRoad = (Roads)Random.Range(0, 3);
         _nowState = stateShow;
         stateShow.Enter(_allQuestions[_numQuestion], _trueRoad);
-        _numQuestion++;
+    }
+
+    private void EndLevel()
+    {
+        int percantalresult = (int)((float)(_allQuestions.Count - _allMistakes.Count) / (float)_allQuestions.Count * 100f);
+
+        viewResult.ShowResult(_allQuestions.Count, _allMistakes.Count, percantalresult);
+
+        string id = DatabaseConnector.AddRepetition(percantalresult);
+
+        foreach (var mistake in _allMistakes)
+        {
+            mistake.IdRepetitionCource = id;
+            DatabaseConnector.AddMistake(mistake);
+        }
     }
 }

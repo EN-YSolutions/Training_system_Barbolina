@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class GameWindow : MonoBehaviour
 {
-    [SerializeField] private ObstacleController obstacle;
+    
     [SerializeField] private PlayerController player;
     [SerializeField] private GameWindowView view;
-    [SerializeField] private ViewRightAnswer rightAnswer;
+    //[SerializeField] private ViewRightAnswer rightAnswer;
     [SerializeField] private ViewResult result;
 
     private List<QuestionModel> AllQuestions = new();
@@ -31,11 +31,7 @@ public class GameWindow : MonoBehaviour
             ResultRun();
 
         int rand = Random.Range(0, 2);
-        TrueRoad = rand == 0 ? Roads.LeftRoad : Roads.RightRoad; 
-
-        //view.ShowQuestion(AllQuestions[numberQ].QuestionText, rand == 0 ? AllQuestions[numberQ].TrueAnswer : AllQuestions[numberQ].FalseAnswer,
-        //    rand == 1 ? AllQuestions[numberQ].TrueAnswer : AllQuestions[numberQ].FalseAnswer);
-        obstacle.Init(AllQuestions[numberQ].Time);
+        TrueRoad = rand == 0 ? Roads.LeftRoad : Roads.RightRoad;
 
         yield return new WaitForSeconds(AllQuestions[numberQ].Time);
 
@@ -63,7 +59,7 @@ public class GameWindow : MonoBehaviour
     private void WrongAnswer()
     {
         AllMistakes.Add(new MistakeModel(AllQuestions[numberQ].Id, DatabaseConnector.IdNowUser, DatabaseConnector.IdCources));
-        rightAnswer.Show(AllQuestions[numberQ]);
+        //rightAnswer.Show(AllQuestions[numberQ]);
     }
 
     private void ResultRun()
