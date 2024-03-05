@@ -30,8 +30,6 @@ public class StateCheckAnswer : BaseState
         _questionModel = questionModel;
         _trueRoad = trueRoad;
 
-        Debug.Log($"{trueRoad} {_nowRoad}");
-
         if (_trueRoad == _nowRoad)
             RightAnswer();
         else

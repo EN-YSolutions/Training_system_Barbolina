@@ -8,7 +8,6 @@ public class GameWindow : MonoBehaviour
     
     [SerializeField] private PlayerController player;
     [SerializeField] private GameWindowView view;
-    //[SerializeField] private ViewRightAnswer rightAnswer;
     [SerializeField] private ViewResult result;
 
     private List<QuestionModel> AllQuestions = new();

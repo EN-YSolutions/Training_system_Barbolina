@@ -59,6 +59,7 @@ public class SelectWindow : BaseWindow
  
         if (needCources.Count != 0)
         {
+            temp = "Курсы, которые cтоит повторить: ";
             foreach (var i in needCources)
             {
                 temp += DatabaseConnector.TitleCourse(i) + "; ";
