@@ -57,8 +57,11 @@ public class StateMachineLevel : MonoBehaviour
 
     private void StartLoopGame()
     {
-        if (_numQuestion == _allQuestions.Count)
+        if (_numQuestion >= _allQuestions.Count)
+        {
             EndLevel();
+            return;
+        }
         _trueRoad = (Roads)Random.Range(0, 3);
         _nowState = stateShow;
         stateShow.Enter(_allQuestions[_numQuestion], _trueRoad);

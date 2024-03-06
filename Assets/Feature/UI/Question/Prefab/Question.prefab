@@ -32,10 +32,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2848232042820385251}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -0.00007081}
-  m_SizeDelta: {x: 527.08, y: 55.38}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -0.00079345703, y: -0.0000705719}
+  m_SizeDelta: {x: 0.9199829, y: -2.619999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4408981114137608967
 CanvasRenderer:
@@ -92,10 +92,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
+  m_fontSize: 44.1
   m_fontSizeBase: 36
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -128,7 +128,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 4.628113, y: 3.9970093, z: 5.553772, w: 2.776886}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -316,7 +316,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a4d61dc68616304f9966b662d643caa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  queestionText: {fileID: 3371049584697183796}
+  questionText: {fileID: 3371049584697183796}
   statisticText: {fileID: 8572886076435828976}
   button: {fileID: 1957949443838187184}
 --- !u!114 &1957949443838187184

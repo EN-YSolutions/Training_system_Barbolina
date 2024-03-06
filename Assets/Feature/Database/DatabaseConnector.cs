@@ -405,7 +405,7 @@ public static class DatabaseConnector
         QuestionModel result = new();
 
         string sql =
-            "SELECT question, trueanswer, onefalseanswer, twofalseanswer, explanation " +
+            "SELECT \"question\", \"trueanswer\", \"oneFalseAnswer\", \"twofalseanswer\", \"explanation\" " +
             $"FROM questions WHERE \"id\" = \'{id}\'";
         _dbcmd.CommandText = sql;
 
@@ -596,6 +596,105 @@ public static class DatabaseConnector
         _reader = _dbcmd.ExecuteReader();
 
         result = _reader.Read();
+
+        _reader.Close();
+        _reader = null;
+        _dbcmd.Dispose();
+        _dbcmd = null;
+        _dbcon.Close();
+        _dbcon = null;
+
+        return result;
+    }
+
+    public static int CountMistake(string idQuestion)
+    {
+        _dbcon = new NpgsqlConnection(_connectionString);
+        _dbcon.Open();
+        _dbcmd = _dbcon.CreateCommand();
+        int result = 0;
+
+        string sql =
+            "SELECT id " +
+            $"FROM falseanswers WHERE \"idquestion\" = \'{idQuestion}\';";
+        _dbcmd.CommandText = sql;
+
+        _reader = _dbcmd.ExecuteReader();
+
+        while (_reader.Read())
+        {
+            for (int i = 0; i < _reader.FieldCount; i++)
+            {
+                result++;
+            }
+        }
+
+        _reader.Close();
+        _reader = null;
+        _dbcmd.Dispose();
+        _dbcmd = null;
+        _dbcon.Close();
+        _dbcon = null;
+
+        return result;
+    }
+
+
+    public static int CountRepetiotion(string idCources)
+    {
+        _dbcon = new NpgsqlConnection(_connectionString);
+        _dbcon.Open();
+        _dbcmd = _dbcon.CreateCommand();
+        int result = 0;
+
+        string sql =
+            "SELECT id " +
+            $"FROM repetitioncourses WHERE \"idcources\" = \'{idCources}\';";
+        _dbcmd.CommandText = sql;
+
+        _reader = _dbcmd.ExecuteReader();
+
+        while (_reader.Read())
+        {
+            for (int i = 0; i < _reader.FieldCount; i++)
+            {
+                result++;
+            }
+        }
+
+        _reader.Close();
+        _reader = null;
+        _dbcmd.Dispose();
+        _dbcmd = null;
+        _dbcon.Close();
+        _dbcon = null;
+
+        return result;
+    }
+
+    public static int AveragePassingValue(string idCources)
+    {
+        _dbcon = new NpgsqlConnection(_connectionString);
+        _dbcon.Open();
+        _dbcmd = _dbcon.CreateCommand();
+        int result = 0;
+
+        string sql =
+            "SELECT percentagecorrectanswers " +
+            $"FROM repetitioncourses WHERE \"idcources\" = \'{idCources}\';";
+        _dbcmd.CommandText = sql;
+
+        _reader = _dbcmd.ExecuteReader();
+
+        while (_reader.Read())
+        {
+            int i = 0;
+            for (; i < _reader.FieldCount; i++)
+            {
+                result += Int32.Parse(_reader[i].ToString());
+            }
+            result /= i + 1;
+        }
 
         _reader.Close();
         _reader = null;

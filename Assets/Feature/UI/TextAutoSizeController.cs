@@ -34,13 +34,25 @@ public class TextAutoSizeController : MonoBehaviour
 
     private void Update()
     {
+        if (_labels == null || _labels.Count == 0) return;
         if (_executeOnUpdate) Execute();
         OnUpdateCheck();
     }
 
+    public void Init(List<TMP_Text> texts)
+    {
+        _labels = texts;
+    }
+
+    public void Clear()
+    {
+        _labels.Clear();
+        _labels = null;
+    }
+
     public void Execute()
     {
-        if (_labels.Count == 0 && _labels == null) return;
+        if (_labels == null || _labels.Count == 0) return;
 
         int count = _labels.Count;
         int index = 0;
@@ -82,7 +94,7 @@ public class TextAutoSizeController : MonoBehaviour
 
     private void OnUpdateCheck()
     {
-        if (_labels.Count == 0 && _labels == null && _currentIndex >= _labels.Count) return;
+        if (_labels == null || _labels.Count == 0 || _currentIndex >= _labels.Count) return;
         float optimumPointSize = _labels[_currentIndex].fontSize;
         int count = _labels.Count;
 

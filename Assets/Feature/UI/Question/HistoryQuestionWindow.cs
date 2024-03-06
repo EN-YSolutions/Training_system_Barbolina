@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 public class HistoryQuestionWindow : BaseWindow
 {
@@ -14,7 +15,8 @@ public class HistoryQuestionWindow : BaseWindow
     [SerializeField] private GameObject lineQuestionPrefab;
     [Space]
     [SerializeField] private ShowQuestionWindow showQuestionWindow;
-
+    [SerializeField] private TextMeshProUGUI generalStatistics;
+    [SerializeField] private TextAutoSizeController sizeController;
 
     private Dictionary<string, string> _idAndTitle;
     private List<GameObject> _lines = new();
@@ -50,25 +52,36 @@ public class HistoryQuestionWindow : BaseWindow
     private void ShowQuestions()
     {
         List<QuestionModel> questionModels = DatabaseConnector.AllCoursQuestions(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text]);
+        generalStatistics.text = $"Общая статистика:\n{DatabaseConnector.AveragePassingValue(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text])}%";
+        int allCountRepetion = DatabaseConnector.CountRepetiotion(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text]);
 
-        // TODO: Сортировать вопросы по % 
+        foreach(var model in questionModels)
+        {
+            model.PercentRight = (int)((float)(allCountRepetion - DatabaseConnector.CountMistake(model.Id)) / (float)allCountRepetion * 100f);
+        }
+
+        questionModels = questionModels.OrderBy(x => x.PercentRight).ToList();
 
         if (_lines.Count != 0)
             ClearContent();
+
+        List<TMP_Text> textsLine = new();
 
         foreach (var model in questionModels)
         {
             var line = Instantiate(lineQuestionPrefab, contentTransform).GetComponent<LineQuestion>();
             line.QuestionText = model.QuestionText;
-            // TODO: a.StatisticText = ;
+            line.StatisticText = model.PercentRight.ToString();
             _lines.Add(line.gameObject);
             line.ButtonQuestion.onClick.AddListener(() => ShowConcreteQuestion(model));
+            textsLine.Add(line.QuestionTMPText);
         }
+
+        sizeController.Init(textsLine);
     }
 
     private void ShowConcreteQuestion(QuestionModel question)
     {
-        WindowAggregator.Open(showQuestionWindow);
         showQuestionWindow.Init(question);
     }
 
@@ -77,5 +90,6 @@ public class HistoryQuestionWindow : BaseWindow
         for (int i = 0; i < _lines.Count; i++)
             Destroy(_lines[i]);
         _lines.Clear();
+        sizeController.Clear();
     }
 }

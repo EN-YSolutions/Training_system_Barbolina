@@ -18,6 +18,9 @@ public class StateCheckAnswer : BaseState
     [Space]
     [SerializeField] private TextMeshProUGUI goodResult;
     [SerializeField] private float timeForShowResult;
+    [Space]
+    [SerializeField] private ObstacleController obstacle;
+    [SerializeField] private Animator animatorPlayer;
 
     private Roads _nowRoad;
     private QuestionModel _questionModel;
@@ -61,8 +64,11 @@ public class StateCheckAnswer : BaseState
     private void RightAnswer()
     {
         _timer = Time.time + timeForShowResult;
+        StartCoroutine(obstacle.RightEnd(timeForShowResult));
+        animatorPlayer.Play("05_Jump_Cat_Copy");
         _isRightAnswer = true;
         goodResult.text = "Молодец";
+        obstacle.OpenFence(_trueRoad);
     }
 
     private void FalseAnswer()
@@ -78,5 +84,6 @@ public class StateCheckAnswer : BaseState
     private void EndCheck()
     {
         stateMachine.ChangeState(stateShow);
+        animatorPlayer.Play("03_Walk_Cat_Copy");
     }
 }

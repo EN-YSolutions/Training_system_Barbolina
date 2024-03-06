@@ -11,6 +11,7 @@ public class QuestionModel
     public string TwoFalseAnswer;
     public string Explanation;
     public int Time;
+    public int PercentRight;
 
     public QuestionModel(string id, string questionText, string trueAnswer, string oneFalseAnswer, string twoFalseAnswer, string explanation, int time)
     {

@@ -19,7 +19,9 @@ public class StateRun : BaseState
     [SerializeField] private Transform leftRoad;
     [SerializeField] private Transform centerRoad;
     [SerializeField] private Transform rightRoad;
-
+    [Space]
+    [SerializeField] private int changeSpeed;
+    [SerializeField] private Animator animatorPlayer;
 
     private Roads _nowRoad;
     private QuestionModel _questionModel;
@@ -57,6 +59,10 @@ public class StateRun : BaseState
     {
         if (_timer < Time.time)
             ChangeRoad();
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+            Run();
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+            StopRun();
     }
 
     public override void End()
@@ -111,8 +117,21 @@ public class StateRun : BaseState
         questionText.text = _questionModel.QuestionText;
     }
 
+    private void Run()
+    {
+        obstacle.Speed = changeSpeed;
+        animatorPlayer.Play("04_Run_Cat_Copy");
+    }
+
+    private void StopRun()
+    {
+        obstacle.Speed = 1;
+        animatorPlayer.Play("03_Walk_Cat_Copy");
+    }
+
     private void EndRun()
     {
+        obstacle.Speed = 1;
         stateMachine.ChangeState(stateCheck);
     }
 }

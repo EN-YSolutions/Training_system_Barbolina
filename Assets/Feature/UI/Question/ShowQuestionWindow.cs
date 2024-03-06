@@ -13,20 +13,11 @@ public class ShowQuestionWindow : BaseWindow
 
     public void Init(QuestionModel questionModel)
     {
+        gameObject.SetActive(true);
         questionText.text = questionModel.QuestionText;
         exceptionText.text = questionModel.Explanation;
         trueAnswerText.text = questionModel.TrueAnswer;
         oneFalseAnswerText.text = questionModel.OneFalseAnswer;
         twoFalseAnswerText.text = questionModel.TwoFalseAnswer;
-    }
-
-    private void Awake()
-    {
-        exitButton.onClick.AddListener(WindowAggregator.Close);
-    }
-
-    private void OnDestroy()
-    {
-        exitButton.onClick.RemoveListener(WindowAggregator.Close);
     }
 }
