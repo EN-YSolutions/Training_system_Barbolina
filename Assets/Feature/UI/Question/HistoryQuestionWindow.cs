@@ -15,6 +15,7 @@ public class HistoryQuestionWindow : BaseWindow
     [SerializeField] private GameObject lineQuestionPrefab;
     [Space]
     [SerializeField] private ShowQuestionWindow showQuestionWindow;
+    [Space]
     [SerializeField] private TextMeshProUGUI generalStatistics;
     [SerializeField] private TextAutoSizeController sizeController;
 
@@ -25,6 +26,7 @@ public class HistoryQuestionWindow : BaseWindow
     {
         showButton.onClick.AddListener(ShowQuestions);
         exitButton.onClick.AddListener(WindowAggregator.Close);
+        showQuestionWindow.OnDeleteQuestion += DeleteQuestion;
     }
 
     private void OnEnable()
@@ -32,7 +34,7 @@ public class HistoryQuestionWindow : BaseWindow
         List<string> idCources = DatabaseConnector.AllCoursesUserAuthor();
         _idAndTitle = new();
         courcesDropdown.ClearOptions();
-
+        
         foreach (string id in idCources)
         {
             _idAndTitle.Add(DatabaseConnector.TitleCourse(id), id);
@@ -47,20 +49,21 @@ public class HistoryQuestionWindow : BaseWindow
     {
         showButton.onClick.RemoveListener(ShowQuestions);
         exitButton.onClick.RemoveListener(WindowAggregator.Close);
+        showQuestionWindow.OnDeleteQuestion -= DeleteQuestion;
     }
 
     private void ShowQuestions()
     {
         List<QuestionModel> questionModels = DatabaseConnector.AllCoursQuestions(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text]);
-        generalStatistics.text = $"Общая статистика:\n{DatabaseConnector.AveragePassingValue(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text])}%";
-        int allCountRepetion = DatabaseConnector.CountRepetiotion(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text]);
+        //generalStatistics.text = $"Общая статистика:\n{DatabaseConnector.AveragePassingValue(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text])}%";
+        //int allCountRepetion = DatabaseConnector.CountRepetiotion(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text]);
 
-        foreach(var model in questionModels)
-        {
-            model.PercentRight = (int)((float)(allCountRepetion - DatabaseConnector.CountMistake(model.Id)) / (float)allCountRepetion * 100f);
-        }
+        //foreach(var model in questionModels)
+        //{
+        //    model.PercentRight = (int)((float)(allCountRepetion - DatabaseConnector.CountMistake(model.Id)) / (float)allCountRepetion * 100f);
+        //}
 
-        questionModels = questionModels.OrderBy(x => x.PercentRight).ToList();
+        //questionModels = questionModels.OrderBy(x => x.PercentRight).ToList();
 
         if (_lines.Count != 0)
             ClearContent();
@@ -91,5 +94,11 @@ public class HistoryQuestionWindow : BaseWindow
             Destroy(_lines[i]);
         _lines.Clear();
         sizeController.Clear();
+    }
+
+    private void DeleteQuestion(string id)
+    {
+        DatabaseConnector.DeleteQuestion(id);
+        ShowQuestions();
     }
 }

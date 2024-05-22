@@ -20,13 +20,18 @@ public class StateCheckAnswer : BaseState
     [SerializeField] private float timeForShowResult;
     [Space]
     [SerializeField] private ObstacleController obstacle;
-    [SerializeField] private Animator animatorPlayer;
 
+    private Animator _animatorPlayer;
     private Roads _nowRoad;
     private QuestionModel _questionModel;
     private Roads _trueRoad;
     private bool _isRightAnswer;
     private float _timer;
+
+    private void Start()
+    {
+        _animatorPlayer = GameObject.FindGameObjectWithTag("Player").GetComponent<Animator>();
+    }
 
     public override void Enter(QuestionModel questionModel, Roads trueRoad)
     {
@@ -65,7 +70,7 @@ public class StateCheckAnswer : BaseState
     {
         _timer = Time.time + timeForShowResult;
         StartCoroutine(obstacle.RightEnd(timeForShowResult));
-        animatorPlayer.Play("05_Jump_Cat_Copy");
+        _animatorPlayer.Play("Jump");
         _isRightAnswer = true;
         goodResult.text = "Молодец";
         obstacle.OpenFence(_trueRoad);
@@ -84,6 +89,6 @@ public class StateCheckAnswer : BaseState
     private void EndCheck()
     {
         stateMachine.ChangeState(stateShow);
-        animatorPlayer.Play("03_Walk_Cat_Copy");
+        _animatorPlayer.Play("Walk");
     }
 }

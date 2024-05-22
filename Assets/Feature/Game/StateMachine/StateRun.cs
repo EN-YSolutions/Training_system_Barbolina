@@ -15,16 +15,16 @@ public class StateRun : BaseState
     [SerializeField] private TextMeshProUGUI centerRoadAnswer;
     [SerializeField] private TextMeshProUGUI leftRoadAnswer;
     [Space]
-    [SerializeField] private GameObject player;
     [SerializeField] private Transform leftRoad;
     [SerializeField] private Transform centerRoad;
     [SerializeField] private Transform rightRoad;
     [Space]
     [SerializeField] private int changeSpeed;
-    [SerializeField] private Animator animatorPlayer;
 
-    private Roads _nowRoad;
+    private Animator _animatorPlayer;
+    private GameObject _player;
     private QuestionModel _questionModel;
+    private Roads _nowRoad;
     private Roads _trueRoad;
 
     private bool _isStartLevel = true;
@@ -33,13 +33,19 @@ public class StateRun : BaseState
     private float _timer = 0;
     private float _timeToChangeRoad = .5f;
 
+    private void Start()
+    {
+        _player = GameObject.FindGameObjectWithTag("Player");
+        _animatorPlayer = _player.GetComponent<Animator>();
+    }
+
     public override void Enter(QuestionModel questionModel, Roads trueRoad)
     {
         if (_isStartLevel)
         {
             _isStartLevel = false;
             _nowRoad = Roads.CentralRoad;
-            player.transform.position = centerRoad.position;
+            _player.transform.position = centerRoad.position;
             _roadTransform = new Dictionary<Roads, Transform>()
                 {
                     { Roads.LeftRoad, leftRoad},
@@ -84,12 +90,12 @@ public class StateRun : BaseState
             if (Input.GetAxis("Horizontal") > 0 && (int)_nowRoad + 1 < System.Enum.GetNames(typeof(Roads)).Length)
             {
                 _nowRoad = (Roads)((int)_nowRoad + 1);
-                player.transform.position = _roadTransform[_nowRoad].position;
+                _player.transform.position = _roadTransform[_nowRoad].position;
             }
             else if (Input.GetAxis("Horizontal") < 0 && (int)_nowRoad - 1 >= 0)
             {
                 _nowRoad = (Roads)((int)_nowRoad - 1);
-                player.transform.position = _roadTransform[_nowRoad].position;
+                _player.transform.position = _roadTransform[_nowRoad].position;
             }
         }
     }
@@ -120,13 +126,13 @@ public class StateRun : BaseState
     private void Run()
     {
         obstacle.Speed = changeSpeed;
-        animatorPlayer.Play("04_Run_Cat_Copy");
+        _animatorPlayer.Play("Run");
     }
 
     private void StopRun()
     {
         obstacle.Speed = 1;
-        animatorPlayer.Play("03_Walk_Cat_Copy");
+        _animatorPlayer.Play("Walk");
     }
 
     private void EndRun()
