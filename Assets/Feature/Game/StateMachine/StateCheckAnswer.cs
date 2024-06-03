@@ -74,6 +74,7 @@ public class StateCheckAnswer : BaseState
         _isRightAnswer = true;
         goodResult.text = "Молодец";
         obstacle.OpenFence(_trueRoad);
+        stateMachine.AddAnswer(new AnswerModel(_questionModel.Id, true));
     }
 
     private void FalseAnswer()
@@ -83,7 +84,7 @@ public class StateCheckAnswer : BaseState
         rightAnswerText.text = _questionModel.TrueAnswer;
         explanationText.text = _questionModel.Explanation;
         closeButton.onClick.AddListener(EndCheck);
-        stateMachine.AddMistake();
+        stateMachine.AddAnswer(new AnswerModel(_questionModel.Id, false));
     }
 
     private void EndCheck()

@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.00079345703, y: -0.0000705719}
+  m_AnchoredPosition: {x: -0.00079345703, y: -0.00006866455}
   m_SizeDelta: {x: 0.9199829, y: -2.619999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4408981114137608967
@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u0422\u0435\u043A\u0441\u0442 \u0432\u043E\u043F\u0440\u043E\u0441\u0430"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 007a3914248105844a7ae5e628fdaf3c, type: 2}
+  m_sharedMaterial: {fileID: 5657365367026507933, guid: 007a3914248105844a7ae5e628fdaf3c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -92,7 +92,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 39.8
+  m_fontSize: 72
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -169,7 +169,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0.7575646, y: 1}
-  m_AnchoredPosition: {x: -0.27999878, y: 0}
+  m_AnchoredPosition: {x: -0.2800293, y: 0}
   m_SizeDelta: {x: -0.55999756, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2561209267073153063
@@ -430,8 +430,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u0445\u0445\u0445%"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 007a3914248105844a7ae5e628fdaf3c, type: 2}
+  m_sharedMaterial: {fileID: 5657365367026507933, guid: 007a3914248105844a7ae5e628fdaf3c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

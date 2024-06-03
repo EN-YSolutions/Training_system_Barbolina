@@ -6,74 +6,74 @@ using UnityEngine;
 public class GameWindow : MonoBehaviour
 {
     
-    [SerializeField] private PlayerController player;
-    [SerializeField] private GameWindowView view;
-    [SerializeField] private ViewResult result;
+    //[SerializeField] private PlayerController player;
+    //[SerializeField] private GameWindowView view;
+    //[SerializeField] private ViewResult result;
 
-    private List<QuestionModel> AllQuestions = new();
-    private List<MistakeModel> AllMistakes = new();
+    //private List<QuestionModel> AllQuestions = new();
+    //private List<MistakeModel> AllMistakes = new();
 
-    private int numberQ = 0;
+    //private int numberQ = 0;
 
-    private Roads TrueRoad;
+    //private Roads TrueRoad;
 
-    private void Awake()
-    {
+    //private void Awake()
+    //{
         
 
-        StartCoroutine(StartRun());
-    }
+    //    StartCoroutine(StartRun());
+    //}
 
-    private IEnumerator StartRun()
-    {
-        if (numberQ == AllQuestions.Count)
-            ResultRun();
+    //private IEnumerator StartRun()
+    //{
+    //    if (numberQ == AllQuestions.Count)
+    //        ResultRun();
 
-        int rand = Random.Range(0, 2);
-        TrueRoad = rand == 0 ? Roads.LeftRoad : Roads.RightRoad;
+    //    int rand = Random.Range(0, 2);
+    //    TrueRoad = rand == 0 ? Roads.LeftRoad : Roads.RightRoad;
 
-        yield return new WaitForSeconds(AllQuestions[numberQ].Time);
+    //    yield return new WaitForSeconds(AllQuestions[numberQ].Time);
 
-        CheckRight();
+    //    CheckRight();
         
-    }
+    //}
     
-    private void CheckRight()
-    {
-        if (TrueRoad != player.NowRoad)
-            WrongAnswer();
+    //private void CheckRight()
+    //{
+    //    if (TrueRoad != player.NowRoad)
+    //        WrongAnswer();
 
-        if (numberQ < AllQuestions.Count)
-        {
-            numberQ++;
-            if (numberQ == AllQuestions.Count)
-            {
-                ResultRun();
-                return;
-            }
-            StartCoroutine(StartRun());
-        }
-    }
+    //    if (numberQ < AllQuestions.Count)
+    //    {
+    //        numberQ++;
+    //        if (numberQ == AllQuestions.Count)
+    //        {
+    //            ResultRun();
+    //            return;
+    //        }
+    //        StartCoroutine(StartRun());
+    //    }
+    //}
 
-    private void WrongAnswer()
-    {
-        AllMistakes.Add(new MistakeModel(AllQuestions[numberQ].Id, DatabaseConnector.IdNowUser, DatabaseConnector.IdCources));
-        //rightAnswer.Show(AllQuestions[numberQ]);
-    }
+    //private void WrongAnswer()
+    //{
+    //    AllMistakes.Add(new MistakeModel(AllQuestions[numberQ].Id, DatabaseConnector.IdNowUser, DatabaseConnector.IdCources));
+    //    //rightAnswer.Show(AllQuestions[numberQ]);
+    //}
 
-    private void ResultRun()
-    {
-        int percantalresult = (int)((float)(AllQuestions.Count - AllMistakes.Count) / (float)AllQuestions.Count * 100f);
+    //private void ResultRun()
+    //{
+    //    int percantalresult = (int)((float)(AllQuestions.Count - AllMistakes.Count) / (float)AllQuestions.Count * 100f);
 
-        result.ShowResult(AllQuestions.Count, AllMistakes.Count, percantalresult);
+    //    result.ShowResult(AllQuestions.Count, AllMistakes.Count, percantalresult);
 
-        string id = DatabaseConnector.AddRepetition(percantalresult);
+    //    string id = DatabaseConnector.AddRepetition(percantalresult);
 
-        foreach (var mistake in AllMistakes)
-        {
-            mistake.IdRepetitionCource = id;
-            DatabaseConnector.AddMistake(mistake);
-        }
+    //    //foreach (var mistake in AllMistakes)
+    //    //{
+    //    //    mistake.IdRepetitionCource = id;
+    //    //    DatabaseConnector.AddMistake(mistake);
+    //    //}
 
-    }
+    //}
 }

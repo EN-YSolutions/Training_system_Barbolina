@@ -18,6 +18,11 @@ public class SelectWindow : BaseWindow
 
     private Dictionary<string, string> _idAndTitle = new();
     private int _maxQuantity = 0;
+    private int _minQuantity = 3;
+    private int _numbText = 0;
+
+    private List<string> _canChooseCources;
+    private List<string> _needCources;
 
     private void Awake()
     {
@@ -29,15 +34,23 @@ public class SelectWindow : BaseWindow
 
     private void OnEnable()
     {
-        ShowAdvice();
-
         List<string> idCources = DatabaseConnector.AllCoursesUserTakes();
+        _canChooseCources = new();
 
         foreach (string id in idCources)
         {
+            DatabaseConnector.AddCourcesId(id);
+            if (DatabaseConnector.AllCoursesQuestionsForRepetition(id).Count <= 3)
+                continue;
+
+            _canChooseCources.Add(id);
             _idAndTitle.Add(DatabaseConnector.TitleCourse(id), id);
             cources.options.Add(new TMP_Dropdown.OptionData(DatabaseConnector.TitleCourse(id)));
         }
+        
+
+
+        ShowAdvice();
         cources.value = 0;
         cources.Select();
         cources.RefreshShownValue();
@@ -69,14 +82,21 @@ public class SelectWindow : BaseWindow
 
     private void ShowAdvice()
     {
-        List<string> needCources = DatabaseConnector.AllNeedCoursesRepetition();
+        _needCources = new();
+
+        foreach (var i in _canChooseCources)
+        {
+            if (!DatabaseConnector.WasCourseRepetitionToday(i))
+                _needCources.Add(i);
+        }
 
         var temp = "";
 
-        if (needCources.Count != 0)
+        if (_needCources.Count != 0)
         {
-            temp = "Курсы, которые cтоит повторить: ";
-            foreach (var i in needCources)
+            temp += "Курсы, которые вы давно не повторяли: ";
+
+            foreach (var i in _needCources)
             {
                 temp += DatabaseConnector.TitleCourse(i) + "; ";
             }
@@ -87,21 +107,29 @@ public class SelectWindow : BaseWindow
         }
 
 
+
         adviceText.text = temp;
     }
 
     private void CheckInput(string inputValue)
     {
-        if (inputValue != "" && System.Int32.Parse(inputValue) > _maxQuantity)
+        if (inputValue == "" || inputValue == "-")
+            return;
+        _numbText = System.Int32.Parse(inputValue);
+        if (_numbText > _maxQuantity)
             quantityQuestion.text = _maxQuantity.ToString();
+        else if (_numbText < _minQuantity)
+            quantityQuestion.text = _minQuantity.ToString();   
     }
 
 
     private void ChangeMaxQuantityInput(int inputValue)
     {
+        if (_idAndTitle.Count == 0)
+            return;
         DatabaseConnector.AddCourcesId(_idAndTitle[cources.options[inputValue].text]);
         _maxQuantity =  DatabaseConnector.AllCoursesQuestionsForRepetition().Count;
-        quantityText.text = $"Количество вопросов (максимально {_maxQuantity}): ";
+        quantityText.text = $"Количество вопросов:\n(максимально {_maxQuantity}, минимально {_minQuantity}) ";
         quantityQuestion.text = _maxQuantity.ToString();
     }
 

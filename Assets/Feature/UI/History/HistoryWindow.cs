@@ -14,7 +14,9 @@ public class HistoryWindow : BaseWindow
     [SerializeField] private TextMeshProUGUI adviceText;
     [SerializeField] private TMP_Dropdown cources;
 
-    Dictionary<string, string> _idAndTitle = new();
+    private Dictionary<string, string> _idAndTitle = new();
+    private List<string> _canChooseCources;
+    private List<string> _needCources;
 
     private void Awake()
     {
@@ -26,14 +28,21 @@ public class HistoryWindow : BaseWindow
     {
         cources.ClearOptions();
         _idAndTitle.Clear();
-        ShowAdvice();
         List<string> idCources = DatabaseConnector.AllCoursesUserTakes();
+        _canChooseCources = new();
 
         foreach (string id in idCources)
         {
+            DatabaseConnector.AddCourcesId(id);
+            if (DatabaseConnector.AllCoursesQuestionsForRepetition(id).Count <= 3)
+                continue;
+            _canChooseCources.Add(id);
             _idAndTitle.Add(DatabaseConnector.TitleCourse(id), id);
             cources.options.Add(new TMP_Dropdown.OptionData(DatabaseConnector.TitleCourse(id)));
         }
+        cources.RefreshShownValue();
+
+        ShowAdvice();
     }
 
     private void OnDestroy()
@@ -51,16 +60,22 @@ public class HistoryWindow : BaseWindow
     private void ShowAdvice()
     {
         var lastTry = DatabaseConnector.GetLastRetition();
-        List<string> needCources = DatabaseConnector.AllNeedCoursesRepetition();
+        _needCources = new();
+
+        foreach (var i in _canChooseCources)
+        {
+            if (!DatabaseConnector.WasCourseRepetitionToday(i))
+                _needCources.Add(i);
+        }
 
         var temp = $"Процент правильности ответов в последней попытке: {lastTry.PassProgressPoint}\n" +
             $"Дата последней попытки:{lastTry.Date}\n";
 
-        if(needCources.Count != 0)
+        if(_needCources.Count != 0)
         {
-            temp += "Курсы, которые вы давно не повторяли: ";
+            temp += "Курсы, которые вы давно не повторяли:\n ";
 
-            foreach (var i in needCources)
+            foreach (var i in _needCources)
             {
                 temp += DatabaseConnector.TitleCourse(i) + "; ";
             }

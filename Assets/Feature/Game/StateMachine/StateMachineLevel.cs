@@ -12,7 +12,8 @@ public class StateMachineLevel : MonoBehaviour
 
     private List<QuestionModel> _allQuestions = new();
     private List<QuestionModel> _usedQuestions = new();
-    private List<MistakeModel> _allMistakes = new();
+    private List<AnswerModel> _allAnswersQuestion = new();
+    private List<AnswerModel> _allAnswersTerm = new();
     private List<TermModel> _termModels = new();
     private List<TermModel> _termUsedModels = new();
     private int _needTerms = 3;
@@ -20,17 +21,23 @@ public class StateMachineLevel : MonoBehaviour
     private bool _isNeedConnectingGames;
 
     private int _numQuestion = 0;
+    private int _endCountQuestion = 0;
+    private int _allAnswer = 0;
+    private int _allRightAnswer = 0;
 
     private Roads _trueRoad;
 
     private BaseState _nowState;
+    private bool _isEnd = false;
 
     public void ChangeState(BaseState state)
     {
+        if (_isEnd)
+            return;
         _nowState.End();
         if (state == stateShow)
         {
-            if (_isNeedConnectingGames && _indexConnectingGames + 1 == _numQuestion)
+            if (_isNeedConnectingGames && _indexConnectingGames == _numQuestion + 1)
             {
                 _nowState = connectingTerms;
                 connectingTerms.Init(_termUsedModels);
@@ -46,9 +53,12 @@ public class StateMachineLevel : MonoBehaviour
         _nowState = state;
     }
 
-    public void AddMistake()
+    public void AddAnswer(AnswerModel answer, bool isQuestion = true)
     {
-        _allMistakes.Add(new MistakeModel(_usedQuestions[_numQuestion].Id, DatabaseConnector.IdNowUser, DatabaseConnector.IdCources));
+        if (isQuestion)
+            _allAnswersQuestion.Add(answer);
+        else
+            _allAnswersTerm.Add(answer);
     }
 
     private void Awake()
@@ -61,6 +71,7 @@ public class StateMachineLevel : MonoBehaviour
         if (_termModels.Count >= _needTerms)
         {
             _isNeedConnectingGames = true;
+            _endCountQuestion += 1;
             System.Random R = new System.Random();
             for (int i = 0; i < _needTerms; i++)
             {
@@ -68,7 +79,7 @@ public class StateMachineLevel : MonoBehaviour
                 _termUsedModels.Add(_termModels[index]);
                 _termModels.RemoveAt(index);
             }
-            _indexConnectingGames = Random.Range(1, DatabaseConnector.MaxQuantityQuestion - 2);
+            _indexConnectingGames = Random.Range(1, DatabaseConnector.MaxQuantityQuestion - 1);
         }
 
 
@@ -84,20 +95,24 @@ public class StateMachineLevel : MonoBehaviour
             _usedQuestions.Add(_allQuestions[index]);
             _allQuestions.RemoveAt(index);
         }
+        _endCountQuestion += _usedQuestions.Count;
 
         StartLoopGame();
     }
 
     private void Update()
     {
-        if (_nowState != null)
+        if (_nowState != null && !_isEnd)
             _nowState.LogicUpdate();
     }
 
     private void StartLoopGame()
     {
-        if (_numQuestion >= _usedQuestions.Count)
+        if (_isEnd)
+            return;
+        if (_numQuestion >= _usedQuestions.Count )
         {
+            _isEnd = true;
             EndLoopGame();
             return;
         }
@@ -106,18 +121,43 @@ public class StateMachineLevel : MonoBehaviour
         stateShow.Enter(_usedQuestions[_numQuestion], _trueRoad);
     }
 
+ 
+
     private void EndLoopGame()
     {
-        int percantalresult = (int)((float)(_usedQuestions.Count - _allMistakes.Count) / (float)_usedQuestions.Count * 100f);
+        _allAnswer = _allAnswersQuestion.Count + _allAnswersTerm.Count;
 
-        viewResult.ShowResult(DatabaseConnector.MaxQuantityQuestion, _allMistakes.Count, percantalresult);
+        for (int i = 0; i < _allAnswersQuestion.Count; i++)
+        {
+            if (_allAnswersQuestion[i].Answer)
+                _allRightAnswer++;
+        }
 
-        //string id = DatabaseConnector.AddRepetition(percantalresult);
+        for (int i = 0; i < _allAnswersTerm.Count; i++)
+        {
+            if (_allAnswersTerm[i].Answer)
+                _allRightAnswer++;
+        }
 
-        //foreach (var mistake in _allMistakes)
-        //{
-        //    mistake.IdRepetitionCource = id;
-        //    DatabaseConnector.AddMistake(mistake);
-        //}
+        int percantalresult = 100;
+
+        if (_allRightAnswer != _allAnswer)
+            percantalresult = (int)((float)_allRightAnswer / (float)_allAnswer * 100f);
+
+        viewResult.ShowResult(_allAnswer, _allAnswer - _allRightAnswer, percantalresult);
+
+        string id = DatabaseConnector.AddRepetition(percantalresult);
+
+        foreach (var answer in _allAnswersQuestion)
+        {
+            answer.IdRepetitionCource = id;
+            DatabaseConnector.AddQuestionAnswer(answer);
+        }
+
+        foreach (var answer in _allAnswersTerm)
+        {
+            answer.IdRepetitionCource = id;
+            DatabaseConnector.AddTermAnswer(answer);
+        }
     }
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -13,13 +11,21 @@ public class AuthorizationWindow : BaseWindow
     [Space]
     [SerializeField] private MainMenuWindow mainMenu;
 
-    private void Awake()
+    private void Start()
     {
         authorizationButton.onClick.AddListener(TryOpen);
         exitButton.onClick.AddListener(Exit);
 
-        if(DatabaseConnector.TryVerification())
+        if (DatabaseConnector.IdNowUser != "")
             WindowAggregator.Open(mainMenu);
+    }
+
+    private void OnEnable()
+    {
+        nameInput.Select();
+        nameInput.text = "";
+        passwordInput.Select();
+        passwordInput.text = "";
     }
 
     private void OnDestroy()

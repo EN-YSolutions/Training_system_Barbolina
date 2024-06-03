@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +21,9 @@ public class HistoryTermWindow : BaseWindow
 
     private Dictionary<string, string> _idAndTitle;
     private List<GameObject> _lines = new();
+
+    private int _allAnswer;
+    private int _allRightAnswer;
 
     private void Awake()
     {
@@ -57,15 +61,27 @@ public class HistoryTermWindow : BaseWindow
     private void ShowQuestions()
     {
         List<TermModel> termModels = DatabaseConnector.AllCoursTerms(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text]);
-        //generalStatistics.text = $"Общая статистика:\n{DatabaseConnector.AveragePassingValue(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text])}%";
-        //int allCountRepetion = DatabaseConnector.CountRepetiotion(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text]);
+        generalStatistics.text = $"Общая статистика по курсу:\n{DatabaseConnector.AveragePassingValue(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text])}%";
+        int allCountRepetion = DatabaseConnector.CountRepetiotion(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text]);
 
-        //foreach(var model in questionModels)
-        //{
-        //    model.PercentRight = (int)((float)(allCountRepetion - DatabaseConnector.CountMistake(model.Id)) / (float)allCountRepetion * 100f);
-        //}
+        foreach (var model in termModels)
+        {
+            _allAnswer = DatabaseConnector.CountAllAnswerTerm(model.Id);
+            if (_allAnswer == 0)
+            {
+                model.PercentRight = -1;
+                continue;
+            }
+            _allRightAnswer = DatabaseConnector.CountAllRightAnswerTerm(model.Id);
+            if (_allRightAnswer == 0)
+            {
+                model.PercentRight = 0;
+                continue;
+            }
+            model.PercentRight = (int)((float)_allAnswer / (float)_allRightAnswer * 100f);
+        }
 
-        //questionModels = questionModels.OrderBy(x => x.PercentRight).ToList();
+        termModels = termModels.OrderBy(x => x.PercentRight).ToList();
 
         if (_lines.Count != 0)
             ClearContent();
@@ -76,7 +92,12 @@ public class HistoryTermWindow : BaseWindow
         {
             var line = Instantiate(lineQuestionPrefab, contentTransform).GetComponent<LineQuestion>();
             line.QuestionText = model.Terminology;
-            line.StatisticText = model.PercentRight.ToString();
+
+            if (model.PercentRight != -1)
+                line.StatisticText = model.PercentRight.ToString();
+            else
+                line.StatisticText = "-";
+
             _lines.Add(line.gameObject);
             line.ButtonQuestion.onClick.AddListener(() => ShowConcreteQuestion(model));
             textsLine.Add(line.QuestionTMPText);
