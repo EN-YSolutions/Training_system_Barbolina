@@ -37,12 +37,16 @@ public class HistoryQuestionWindow : BaseWindow
         List<string> idCources = DatabaseConnector.AllCoursesUserAuthor();
         _idAndTitle = new();
         courcesDropdown.ClearOptions();
+        generalStatistics.text = $"Общая статистика по курсу:\nxxx%";
 
         foreach (string id in idCources)
         {
             _idAndTitle.Add(DatabaseConnector.TitleCourse(id), id);
             courcesDropdown.options.Add(new TMP_Dropdown.OptionData(DatabaseConnector.TitleCourse(id)));
         }
+        courcesDropdown.value = 0;
+        courcesDropdown.Select();
+        courcesDropdown.RefreshShownValue();
 
         if (_lines.Count != 0)
             ClearContent();
@@ -55,12 +59,15 @@ public class HistoryQuestionWindow : BaseWindow
         showQuestionWindow.OnDeleteQuestion -= DeleteQuestion;
     }
 
+    private float _allResult;
+    private float _allPercentRightResult;
 
     private void ShowQuestions()
     {
         List<QuestionModel> questionModels = DatabaseConnector.AllCoursQuestions(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text]);
-        generalStatistics.text = $"Общая статистика по курсу:\n{DatabaseConnector.AveragePassingValue(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text])}%";
 
+        _allResult = 0;
+        _allPercentRightResult = 0;
 
         foreach (var model in questionModels)
         {
@@ -71,6 +78,7 @@ public class HistoryQuestionWindow : BaseWindow
                 model.PercentRight = -1;
                 continue;
             }
+            _allResult++;
             _allRightAnswer = DatabaseConnector.CountAllRightAnswerQuestion(model.Id);
             if (_allRightAnswer == 0)
             {
@@ -78,8 +86,10 @@ public class HistoryQuestionWindow : BaseWindow
 
                 continue;
             }
-            model.PercentRight = (int)((float)_allAnswer / (float)_allRightAnswer * 100f);
+            model.PercentRight = (int)((float)_allRightAnswer /(float)_allAnswer * 100f);
+            _allPercentRightResult += model.PercentRight;
         }
+        generalStatistics.text = $"Общая статистика по курсу:\n{System.Math.Round(_allPercentRightResult / _allResult, 2)}%";
 
         questionModels = questionModels.OrderBy(x => x.PercentRight).ToList();
 

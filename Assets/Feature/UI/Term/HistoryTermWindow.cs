@@ -37,7 +37,7 @@ public class HistoryTermWindow : BaseWindow
         List<string> idCources = DatabaseConnector.AllCoursesUserAuthor();
         _idAndTitle = new();
         courcesDropdown.ClearOptions();
-
+        generalStatistics.text = $"Общая статистика по курсу:\nxxx%";
         foreach (string id in idCources)
         {
             _idAndTitle.Add(DatabaseConnector.TitleCourse(id), id);
@@ -58,11 +58,16 @@ public class HistoryTermWindow : BaseWindow
         showTermWindow.OnDeleteQuestion -= DeleteTerm;
     }
 
+    private float _allResult;
+    private float _allPercentRightResult;
+
     private void ShowQuestions()
     {
         List<TermModel> termModels = DatabaseConnector.AllCoursTerms(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text]);
-        generalStatistics.text = $"Общая статистика по курсу:\n{DatabaseConnector.AveragePassingValue(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text])}%";
         int allCountRepetion = DatabaseConnector.CountRepetiotion(_idAndTitle[courcesDropdown.options[courcesDropdown.value].text]);
+
+        _allResult = 0;
+        _allPercentRightResult = 0;
 
         foreach (var model in termModels)
         {
@@ -72,14 +77,17 @@ public class HistoryTermWindow : BaseWindow
                 model.PercentRight = -1;
                 continue;
             }
+            _allResult++;
             _allRightAnswer = DatabaseConnector.CountAllRightAnswerTerm(model.Id);
             if (_allRightAnswer == 0)
             {
                 model.PercentRight = 0;
                 continue;
             }
-            model.PercentRight = (int)((float)_allAnswer / (float)_allRightAnswer * 100f);
+            model.PercentRight = (int)((float)_allRightAnswer / (float)_allAnswer * 100f);
+            _allPercentRightResult += model.PercentRight;
         }
+        generalStatistics.text = $"Общая статистика по курсу:\n{System.Math.Round(_allPercentRightResult / _allResult,2)}%";
 
         termModels = termModels.OrderBy(x => x.PercentRight).ToList();
 

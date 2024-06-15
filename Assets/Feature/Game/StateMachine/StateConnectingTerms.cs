@@ -116,6 +116,8 @@ public class StateConnectingTerms : BaseState
                 termObjects[i].Init(_termModels[i]);
                 definitionObjects[i].Init(_termModels[i]);
             }
+
+            yield return new WaitForSeconds(3f);
         }
 
         yield return new WaitForSeconds(3f);
