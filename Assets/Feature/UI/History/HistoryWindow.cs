@@ -68,7 +68,7 @@ public class HistoryWindow : BaseWindow
                 _needCources.Add(i);
         }
 
-        var temp = $"Процент правильности ответов в последней попытке: {lastTry.PassProgressPoint}\n" +
+        var temp = $"Процент правильности ответов в последней попытке: {lastTry.PercentageCorrectAnswers}\n" +
             $"Дата последней попытки:{lastTry.Date}\n";
 
         if(_needCources.Count != 0)

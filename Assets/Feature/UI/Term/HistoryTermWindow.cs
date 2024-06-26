@@ -102,7 +102,7 @@ public class HistoryTermWindow : BaseWindow
             line.QuestionText = model.Terminology;
 
             if (model.PercentRight != -1)
-                line.StatisticText = model.PercentRight.ToString();
+                line.StatisticText = model.PercentRight.ToString() + "%";
             else
                 line.StatisticText = "-";
 
